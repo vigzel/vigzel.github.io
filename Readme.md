@@ -1,6 +1,6 @@
 Kreirao sam prazan site sa `jekyll new .`
 
-Zatim sam prema <a href="https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-a-repository-for-your-site">uputama</a> postavio github-pages plugin na verziju 214 koja je bila <a href="https://pages.github.com/versions/">zadnja verzija</a> u trenutku kreiranja sitea i onda pokrenuo `bundle update`.
+Zatim sam prema [uputama][instructions] postavio github-pages plugin na verziju 214 koja je bila [zadnja verzija][gp-version] u trenutku kreiranja sitea i onda pokrenuo `bundle update`.
 
 ```
 gem "github-pages", "~> 214", group: :jekyll_plugins
@@ -8,6 +8,7 @@ gem "github-pages", "~> 214", group: :jekyll_plugins
 
 Ipak sam odustao od ove gore implementacije/
 
+ * GitHub Pages is a static site hosting service that takes HTML, CSS, and JavaScript files straight from a repository on GitHub, optionally runs the files through a build process (using Jekyll), and publishes a website. 
  * "Github pages" hosta statički HTML koji mu se postavi. 
  * "Github pages" također podržava i Jekyll pages, gdje github zapravo koristi Jekyll da builda repo i generira statičke stranice koje će hostati. Međutim ovo ima nekoliko mana:
 	- može trajati do 20 min, iako je obično instantno
@@ -20,3 +21,25 @@ Ljudi uglavnom koriste Github Actions kako bi na svaki push na master pokrenuli 
 
 Ne vidim zašto ne bi sam buildao sa jekyllom lokalno i onda to pushao na repo i postavio _site kao host dir....
 
+
+GitHub Pages publishes any static files that you push to your repository. You can create your own static files or use a static site generator to build your site for you. 
+GitHub Pages will use Jekyll to build your site by default. If you want to use a static site generator other than Jekyll, disable the Jekyll build process by creating an empty file called .nojekyll in the root of your publishing source, then follow your static site generator's instructions to build your site locally.
+
+
+To combine these three commands in one
+```
+git add .
+git commit -a -m "commit" (do not need commit message either)
+git push
+```
+Add an alias to `.gitconfig` file:
+```
+[alias]
+    lazypush = "!f() { git add -A && git commit -m \"$@\" && git push; }; f"
+```
+
+
+Usage: `git lazypush "Long commit message goes here"`
+
+[instructions]: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-a-repository-for-your-site
+[gp-version]: https://pages.github.com/versions/
