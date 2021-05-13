@@ -4,4 +4,5 @@ title:  "SOLID principles"
 date:   2020-05-05 22:11:45 +0200
 categories: jekyll update
 ---
-SOLID principles explained
+
+SOLID principles explained, samo mali test
