@@ -25,6 +25,9 @@ Ne vidim zašto ne bi sam buildao sa jekyllom lokalno i onda to pushao na repo i
 GitHub Pages publishes any static files that you push to your repository. You can create your own static files or use a static site generator to build your site for you. 
 GitHub Pages will use Jekyll to build your site by default. If you want to use a static site generator other than Jekyll, disable the Jekyll build process by creating an empty file called .nojekyll in the root of your publishing source, then follow your static site generator's instructions to build your site locally.
 
+Ako želiš ipak koristiti branch "gh-pages" na koji ti github builda i publisha, tu su upute za [github-actions][github-actions].
+ * prednost ovoga je da edit možeš napraviti izravno na githubu
+ * jednostavno možeš setupirati neki periodički build (npr. buildaj mi site svaki dan u ponoć), ako je zbog nekog plugina to potrebno
 
 To combine these three commands in one
 ```
@@ -43,3 +46,4 @@ Usage: `git lazypush "Long commit message goes here"`
 
 [instructions]: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-a-repository-for-your-site
 [gp-version]: https://pages.github.com/versions/
+[github-actions]: https://jekyllrb.com/docs/continuous-integration/github-actions/

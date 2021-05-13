@@ -34,7 +34,7 @@ theme: minima
 plugins:
   - jekyll-feed
 
-destination: docs
+destination: ./docs
 
 # Exclude from processing.
 # The following items will not be processed, by default.
@@ -55,5 +55,7 @@ destination: docs
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
+include:
+  - .nojekyll
 exclude:
   - Readme.md
