@@ -48,6 +48,8 @@ Usage: `git lazypush "Long commit message goes here"`
 
 
 Ipak cu probati koristiit github akcije...
+ * When Github Action builds your site from master branch, the contents of the destination directory will be automatically pushed to the gh-pages branch with a commit, ready to be used for serving.
+ * The Action we’re using here will create (or reset an existing) gh-pages branch on every successful deploy.
 
 
 
