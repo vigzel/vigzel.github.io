@@ -43,6 +43,7 @@ Add an alias to `.gitconfig` file:
 ```
 
 
+
 Usage: `git lazypush "Long commit message goes here"`
 
 
