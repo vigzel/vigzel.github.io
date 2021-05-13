@@ -58,7 +58,6 @@ social:
 
 
 # Build settings
-destination: ./docs
 
 # plugins:
 #   - jekyll-feed
@@ -150,7 +149,6 @@ jekyll-archives:
 #   - vendor/cache/
 #   - vendor/gems/
 #   - vendor/ruby/
-include:
-  - .nojekyll
+
 exclude:
   - Readme.md

@@ -47,6 +47,10 @@ Usage: `git lazypush "Long commit message goes here"`
 
 
 
+Ipak cu probati koristiit github akcije...
+
+
+
 Vidi: https://tianqi.name/jekyll-TeXt-theme/docs/en/quick-start
 
 [instructions]: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-a-repository-for-your-site
