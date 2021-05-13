@@ -28,6 +28,7 @@ GitHub Pages will use Jekyll to build your site by default. If you want to use a
 Ako želiš ipak koristiti branch "gh-pages" na koji ti github builda i publisha, tu su upute za [github-actions][github-actions].
  * prednost ovoga je da edit možeš napraviti izravno na githubu
  * jednostavno možeš setupirati neki periodički build (npr. buildaj mi site svaki dan u ponoć), ako je zbog nekog plugina to potrebno
+ * commit log je pregledniji jer ne ukljucuje generirane/buildane datoteke u docs
 
 To combine these three commands in one
 ```
@@ -43,6 +44,10 @@ Add an alias to `.gitconfig` file:
 
 
 Usage: `git lazypush "Long commit message goes here"`
+
+
+
+Vidi: https://tianqi.name/jekyll-TeXt-theme/docs/en/quick-start
 
 [instructions]: https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/creating-a-github-pages-site-with-jekyll#creating-a-repository-for-your-site
 [gp-version]: https://pages.github.com/versions/
