@@ -1,0 +1,28 @@
+---
+layout: post
+title:  "Hash"
+date:   2016-10-14 00:00:00 +0000
+categories: [General]
+tags: [hash, hash colicion]
+math: true
+---
+
+**m-bit hash function h(x)** is a hash function which takes an arbitrary object as input, and outputs m bits  
+
+**hashing** is irreversible, compression = reversible.  It is possible to use a hash as a compression function. But since there is no way to calculate the original text from the hash, this compression method can only be used when the original text is available.
+
+
+## Probability of hash collision
+Given k randomly generated values, where each value is a non-negative integer less than N, what is the probability that at least two of them are equal?
+ * Given a space of N possible hash values, suppose you’ve already picked a single value. After that, there are N - 1  remaining values (out of a possible ) that are unique from the first. Therefore, the probability of randomly generating two integers that are unique from each other is (N - 1)/N
+ * After that, there are N - 2  remaining values (out of a possible ) that are unique from the first two, which means that the probability of randomly generating three integers that are all unique is (N-1)/N * (N-2)/N. (We can multiply the probabilities together because each random number generation is an independent event.)
+ * In general, the probability of randomly generating  integers that are all unique is: 
+                                   
+$$ {N-1 \over N} x {N-2 \over N} x ... x {N-(k-2) \over N} x {N-(k-1) \over N} $$
+
+
+The above expression is approximately equal to: 
+
+$$ {e^{-k(k-1) \over 2N}} $$                                                                   
+
+Subtract it from one, and you have the probability of a hash collision: 

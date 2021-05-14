@@ -8,7 +8,7 @@ gem "github-pages", "~> 214", group: :jekyll_plugins
 
 Ipak sam odustao od ove gore implementacije/
 
- * GitHub Pages is a static site hosting service that takes HTML, CSS, and JavaScript files straight from a repository on GitHub, optionally runs the files through a build process (using Jekyll), and publishes a website. 
+
  * "Github pages" hosta statički HTML koji mu se postavi. 
  * "Github pages" također podržava i Jekyll pages, gdje github zapravo koristi Jekyll da builda repo i generira statičke stranice koje će hostati. Međutim ovo ima nekoliko mana:
 	- može trajati do 20 min, iako je obično instantno
@@ -22,8 +22,6 @@ Ljudi uglavnom koriste Github Actions kako bi na svaki push na master pokrenuli 
 Ne vidim zašto ne bi sam buildao sa jekyllom lokalno i onda to pushao na repo i postavio _site kao host dir....
 
 
-GitHub Pages publishes any static files that you push to your repository. You can create your own static files or use a static site generator to build your site for you. 
-GitHub Pages will use Jekyll to build your site by default. If you want to use a static site generator other than Jekyll, disable the Jekyll build process by creating an empty file called .nojekyll in the root of your publishing source, then follow your static site generator's instructions to build your site locally.
 
 Ako želiš ipak koristiti branch "gh-pages" na koji ti github builda i publisha, tu su upute za [github-actions][github-actions].
  * prednost ovoga je da edit možeš napraviti izravno na githubu
