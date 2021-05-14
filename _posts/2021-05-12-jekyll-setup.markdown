@@ -23,8 +23,6 @@ After you push files to a branch selected as publishing source, Github will:
    - If you wan't to  disable the Jekyll build process create an empty file called `.nojekyll` in the root directory
  * Publish any static files that you pushed to your repository
 
-![Github page source](/assets/images/gh-page-source.jpg)
-
 # Publishing options
 
 Checkout your repo and create empty project with `jekyll new .`
@@ -32,16 +30,16 @@ Checkout your repo and create empty project with `jekyll new .`
 
 ## Option 1
 
-1. Edit `_config.yml` by adding line `destination: ./docs`. This will change build destination from default folder `_source` to folder `docs`
-2. Add `docs` to `.gitignore`
-3. Under repository settings - Pages, change source from `/(root)` to `/(docs)`
 
-![Github page source docs](/assets/images/gh-page-source-docs.jpg)
+1. Push changes to your master branch
+2. Set master branch `(root)` as your publishing source
 
+![Github page source](/assets/images/gh-page-source.jpg)
 
 > Cons:
- * you can't use third party plugins that are not whitelisted by github pages
- * you can't use latest jekyll
+ * Odd URL: https://vigzel.github.io/jekyll/update/2021/05/14/welcome-to-jekyll.html
+ * You can't use third party plugins that are not whitelisted by github pages
+ * You can't use latest jekyll
    - current jekyll version is 4.2, while github pages uses 3.9 due to breaking changes in 4.0. 
    - jekyll 4.0 was published in August of 2019. (#you-do-the-math)
    
@@ -51,7 +49,7 @@ Checkout your repo and create empty project with `jekyll new .`
 This option will enable you to use latest and greates from jekyll.
 
  1. Create branch `gh-pages` and set it's `(root)` as your hosting source
- 2. Create Github Action that will build your site and push it to branch `gh-pages`. Action is added in root folder under `.github\workflows\`
+ 2. Create Github Action that will build your site and push it to branch `gh-pages`. Action is added in the root folder under `.github\workflows\`
 
 
 ```yml
@@ -84,14 +82,15 @@ jobs:
 ```
 
 > Cons:
- - build action can last some time and build can fail
+ - build action can last some time (up to 20 minutes) 
+ - build can fail (if it fails you'll get notified by email)
 
 
 ## Option 3
 
 Same as Option2, but instead of `Github Action`, local `.bat` file is used to build and publish.
 
-If build fails, it fails localy. Publish is fast because site is built localy, and after push to branch `gh-pages` github can just publish static site, it does't go through build process since I add `.nojekyll` in the root.
+If build fails, it fails localy. Publish is fast because site is built localy, and after push to branch `gh-pages` github can just publish static site, it does't go through build process since I add `.nojekyll` in site root.
 
 
 ```bat
