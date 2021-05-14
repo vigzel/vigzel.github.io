@@ -31,13 +31,22 @@ Checkout your repo and create empty project with `jekyll new .`
 ## Option 1
 
 
-1. Push changes to your master branch
-2. Set master branch `(root)` as your publishing source
+1. Open the `Gemfile` that Jekyll created.  
+  - Add "#" to the beginning of the line that starts with gem "jekyll" to comment out this line.
+  - Add the github-pages gem by editing the line starting with # gem "github-pages". Change this line to:
+  ```
+  gem "github-pages", "~> 214", group: :jekyll_plugins
+  ```
+  > 214 is the latest supported version of the github-pages gem at the time of writing
+2. Save and close the Gemfile.
+4. From the command line, run `bundle update`
+5. Push changes to your master branch
+6. Under repository settings, set `branch master /(root)` as your publishing source
 
 ![Github page source](/assets/images/gh-page-source.jpg)
 
 > Cons:
- * Odd URL: https://vigzel.github.io/jekyll/update/2021/05/14/welcome-to-jekyll.html
+ * Odd URLs: https://vigzel.github.io/jekyll/update/2021/05/14/welcome-to-jekyll.html
  * You can't use third party plugins that are not whitelisted by github pages
  * You can't use latest jekyll
    - current jekyll version is 4.2, while github pages uses 3.9 due to breaking changes in 4.0. 
@@ -49,8 +58,11 @@ Checkout your repo and create empty project with `jekyll new .`
 This option will enable you to use latest and greates from jekyll.
 
  1. Create branch `gh-pages` and set it's `(root)` as your hosting source
- 2. Create Github Action that will build your site and push it to branch `gh-pages`. Action is added in the root folder under `.github\workflows\`
+ 2. Create Github Action that will build your site and push it to the branch `gh-pages`
+   - _actions are added in the root folder under `.github\workflows\`_
 
+> When Github Action builds your site from master branch, the contents of the destination directory will be automatically pushed to the gh-pages branch with a commit, ready to be used for serving.  
+The Action we’re using here will create (or reset an existing) gh-pages branch on every successful deploy.
 
 ```yml
 name: Build and deploy Jekyll site to GitHub Pages
