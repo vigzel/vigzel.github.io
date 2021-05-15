@@ -1,0 +1,55 @@
+---
+layout: post
+title:  "Testing"
+date:   2017-05-06 00:00:00 +0000
+categories: [General]
+tags: [unit-test, integration-test, acceptance-test, bahavior-test]
+---
+
+## Short Test Descriptions
+
+ * Unit Test (algorithms)
+   - Tests the smallest unit of functionality, typically a method/function (e.g. given a class with a particular state, calling x method on the class should cause y to happen). Test code and the code under test shouldn't: Access the network, Hit a database, Use the file system...etc. Any kind of dependency should be mocked so you can focus on what the unit of code is doing, not what its dependencies do. 
+ * Integration tests (component integration)
+   - Test that different component parts of your system integrate correctly - for example - If you've built some serialization code and unit tested its innards without touching the disk, how do you know that it'll work when you are loading and saving to disk? Maybe you forgot to flush and dispose file-streams. Maybe your file permissions are incorrect and you've tested the innards using in memory streams. The only way to find out for sure is to test it 'for real' using an environment that is closest to production. The main advantage is that they will find bugs that unit tests can't such as wiring bugs (e.g. an instance of class A unexpectedly receives a null instance of B) and environment bugs (it runs fine on my single-CPU machine, but my colleague's 4 core machine can't pass the tests). 
+ * Acceptance test (business features)
+   - It should directly correlate to a business use case. It can be huge ("trades are submitted correctly") or tiny ("filter successfully filters a list") - it doesn't matter; what matters is that it should be explicitly tied to a specific user requirement.
+ * Behavior tests (what happens when you click a button)
+   - Define what the flow should be of an application in the case of a specific input. For example, "when connection cannot be established, verify that the system retries the connection." Again, this is unlikely to be a full acceptance test but it still allows you to verify something useful.
+
+
+## Unit Tests vs Integration Test arguments
+
+### Pro Unit Tests
+ * Unit test are good for the design. Unit tests really do help enforce IOC through DI. By developing with testing in mind you end up with cleaner interfaces, more focussed classes & modules and generally more SOLID, testable code.
+ * Unit test can find bugs that may not be caught in integration test. e.g. masking/offsetting bugs
+ * Finding the root cause for a failing end-to-end test is painful and can take a long time. Unit tests are fast, reliable and the isolate failures
+ * They help to discover run-time failures. These are a terrible thing if your product is an Xbox game, but it's not so bad if your product is an in-house script that is constantly generating reports
+ * If the cost of writing a unit test is 2 minutes and the cost of running the unit test is practically 0, but the cost of manually testing the code is 1 minute, then you break even when you have run the test twice.
+ * The main goal of integration tests is to prove that the system is working correctly, from the USER point of view. A large part of a software systems complexity is caused by the need to handle all things that can go wrong. In most cases the number of tests written aimed to make sure the system doesn't break in extreme cases is larger then the number of tests covering normal system behavior. The thing is, that when thinking as a user, its really hard to look at the system as a whole and figure all the things that can go wrong. It's generally a lot easier (for most developers) to look at each part of the system (units) on its own, analyze all possible failures and write tests (unit tests) that make sure this failures are handled properly. If we want to leverage tests to drive the system technical design, the tests must be aware of the different parts which construct the system design (Units) and explicitly test each of them (Unit tests). 
+
+### Pro Integration Tests
+ * If you have a lot of legacy code. What can one expect from testing units which have bad design to start with? Instead of helping you improve the design, unit tests often work to preserve that bad code... Then it is easier to write more integration and acceptance tests and less unit tests. For detecting bugs the unit tests are not better than integration/acceptance tests. 
+ * Integration/Acceptance test provide much better test coverage, they cover integration points. Ensures the system as a whole meets the acceptance criteria, which is the whole point of software development.
+ * Integration/Acceptance tests make large refactors much easier, faster, and cheaper. See [example](bad-unit-test) where the design was good, but huge refactoring was needed for the next requirement
+   - It wasn't necessary to change ANY of acceptance test, but it was necessary to refactor or delete nearly EVERY unit tests, which is a huge pile of work.
+   - We always want to write less code, but writing unit tests requires MORE code (mainly setup mock objects). The difference between some of my unit tests and integration tests is that in unit tests, I use mock object, and in integration tests, I use real object.
+ * Mocking is costly in real-world cases, and maintaining mocks is doubly so. In fact, when mocking "interesting" objects or interfaces, you might even need tests that verify that your mock objects correctly model your real objects! Mocks work well when first created. As time passes and the real object is changed, the mocks have to change with it. 10 years and 6,000 unit tests down the road, it's very difficult to know that your "successful" tests are really successful.
+
+
+## Final points
+
+ * It is not worth doing tests if you would get payed to fix bugs later :)
+ * Tests can only verify what you have thought of. Not what you haven't thought of.
+ * Remember that if you use TDD, the cost of writing tests is likely to come down as you get better at it. The best way to improve your testing process is to make it regular, measure it, and use what you learn to improve it.
+ * Writing test cases before the code takes the same amount of time and effort as writing the test cases after the code, but it shortens defect-detection-debug-correction-cycles (Test Driven Development)
+ * Fantastic test infrastructure - every night:
+   - The latest version of the service is built.
+   - This version is then deployed to the team's testing environment. 
+   - All end-to-end tests then run against this testing environment. 
+   - An email report summarizing the test results is sent to the team.
+ * Avoid automated browser testing. I have seen a project which tried to have automated browser testing of complete web pages. As far as i can tell, it has not found any of the hundreds of severe bugs we found through manual testing, and it cost an enormous amount of time to develop and maintain.
+
+
+[bad-unit-test]: https://softwareengineering.stackexchange.com/questions/223991/is-it-sufficient-to-use-acceptance-and-integration-tests-instead-of-unit-test
+

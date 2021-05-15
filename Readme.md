@@ -3,7 +3,7 @@
 
 Current theme: [Chirpy][chirpy]
 
-I'm currently using both Option 2 (Github Actions) and Option 3 (publish.bat) for my publishin setup.
+I'm currently using both Option 2 (Github Actions) and Option 3 (publish.bat) for my publishing setup.
 
 Unpublished posts are located inside `_drafts` folder. 
 In order to see my "drafts", when I'm building localy I use
@@ -17,7 +17,7 @@ Saving changes includes these three commands in repetition:
 
 ```
 git add .
-git commit -a -m "commit"
+git commit -m "commit"
 git push
 ```
 
