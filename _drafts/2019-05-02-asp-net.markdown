@@ -1,0 +1,228 @@
+---
+layout: post
+title:  "01 ASP.NET Core"
+date:   2019-05-02 00:00:00 +0000
+categories: [ASP.NET Core]
+tags: [asp.net]
+---
+
+## Servers
+
+The ASP.NET Core hosting model doesn't directly listen for requests. The hosting model relies on an HTTP server implementation to forward the request to the app.
+
+ASP.NET Core provides the following server implementations:
+ - **Kestrel server** is a managed, cross-platform web server. Kestrel is often run in a reverse proxy configuration using IIS (Windows) or  Nginx/Apache (Linux). Kestrel can also be run as a public-facing edge server exposed directly to the Internet in ASP.NET Core 2.0 or later.
+ - **IIS HTTP Server** (IISHttpServer) is an in-process server for IIS.
+ - **HTTP.sys** server is a web server for ASP.NET Core on Windows.
+
+
+## The .NET Core Host:
+
+The host is responsible for app startup and lifetime management. Host
+ - Loads the .NET Core runtime (CoreCLR, it includes the garbage collector, JIT compiler, primitive data types and low-level classes.)
+ - Uses the first command-line argument as the path to the managed binary that contains the entry point (Main) and begins code execution.
+
+ Two host APIs are available for use:
+ 1. Web Host – for hosting web apps.
+ 2. Generic Host  – for hosting non-web apps 
+
+```csharp
+public class Program
+{
+    public static void Main(string[] args)
+    {
+        // Build and Run methods build the IWebHost object
+        // that hosts the app and begins listening for HTTP requests.
+        CreateWebHostBuilder(args).Build().Run(); 
+    }
+
+    public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+        WebHost.CreateDefaultBuilder(args)
+            .ConfigureServices(services =>
+            {
+              ...
+            })
+            .UseStartup<Startup>();
+}
+```
+
+`CreateDefaultBuilder` performs the following tasks:
+ * Configures Kestrel server as the web server. 
+ * Sets the content root to the path returned by Directory.GetCurrentDirectory.
+ * Loads host configuration from:
+   * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
+   * Command-line arguments.
+ * Loads app configuration in the following order from:
+   * appsettings.json.
+   * appsettings.{Environment}.json.
+   * Secret Manager when the app runs in the Development environment using the entry assembly.
+   * Environment variables.
+   * Command-line arguments.
+ * Configures logging for console and debug output. Logging includes log filtering rules specified in a Logging configuration section of an appsettings.json or appsettings.{Environment}.json file.
+ * When running behind IIS with the ASP.NET Core Module, CreateDefaultBuilder enables IIS Integration, which configures the app's base address and port. IIS Integration also configures the app to capture startup errors. 
+ * Sets ServiceProviderOptions.ValidateScopes to true if the app's environment is Development. This will check that:
+   * Scoped services aren't directly or indirectly resolved from the root service provider. ( The root service provider is created when BuildServiceProvider is called and it's lifetime corresponds to the app/server's lifetime. Scoped services are disposed by the container that created them. If a scoped service is created in the root container, the service's lifetime is effectively promoted to singleton. )
+   * Scoped services aren't directly or indirectly injected into singletons.
+
+
+
+`IWebHostBuilder`, the return type of the WebHost.CreateDefaultBuilder invocation, provides many optional methods 
+ - UseKestrel for hosting the app in the Kestrel web server (this is default), or UseHttpSys for hosting the app in HTTP.sys
+ - UseContentRoot for specifying the root content directory (by default, the content root is the same location as the app base path for the executable hosting the app)
+ - UseWebRoot -  directory containing public, static resources, such as CSS, JavaScript, and image files. By default, wwwroot is the webroot.
+ - UseStartup for specifieing the Startup class for your app
+ - ...
+
+
+The host also provides services (for example, `IHostingEnvironment`, `IConfiguration`, `ILoggerFactory`) that can optionally be injected in Startup class constructor.  
+The Startup adds additional services via  `Startup.ConfigureServices`. Both the host and app services are then available in `Startup.Configure` and throughout the app.
+
+## Startup 
+
+Startup class has two public methods:
+ - **ConfigureServices** defines the Services used by your app (for example, MVC, Entity Framework Core, Identity...). It's optional and it's called by the host before the Configure method.
+ - **Configure** defines the middleware called in the request pipeline (middleware performs asynchronous operations on an HttpContext and then either invokes the next middleware in the pipeline or terminates the request)
+
+
+ > Services and middleware can be defined without using a Startup class, by calling `ConfigureServices` and `Configure` convenience methods on the host builder. Multiple calls to `ConfigureServices` append to one another. If multiple `Configure` method calls exist, the last Configure call is used.
+
+
+For features that require substantial setup, there are `Add{Service}` extension methods on `IServiceCollection` that add (and potentially configure) services. For example, `services.AddMvc()` adds the services that Razor Pages and MVC require. We recommended that apps follow this convention. Place extension methods in the `Microsoft.Extensions.DependencyInjection` namespace to encapsulate groups of service registrations, for example:
+
+```csharp
+public static Microsoft.Extensions.DependencyInjection.IServiceCollection 
+  AddMyComplexService(this Microsoft.Extensions.DependencyInjection.IServiceCollection serviceCollection);
+```
+
+
+A typical ASP.NET Core app will register services for Entity Framework, Identity, and MVC. The services are resolved via dependency injection or from ApplicationServices.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    // Add framework services.
+    services.AddDbContext<ApplicationDbContext>(options =>
+        options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+    services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
+    services.AddMvc();
+    // Add application services.
+    services.AddTransient<IEmailSender, AuthMessageSender>();
+    services.AddTransient<ISmsSender, AuthMessageSender>();
+}
+```
+
+If the service's constructor requires a primitive, such as a string, the primitive can be injected by using configuration or the options pattern.
+
+```csharp
+public MyDependency(IConfiguration config)
+{
+    var myStringValue = config["MyStringKey"];
+}
+```
+
+
+`IStartupFilter` is used to configure middleware at the beginning or end of an app's Configure middleware pipeline. `IStartupFilter` is useful to ensure that a middleware runs before or after middleware added by libraries. Middleware execution order is set by the order of `IStartupFilter` registrations.
+
+```csharp
+WebHost.CreateDefaultBuilder(args)
+    .ConfigureServices(services =>
+    {
+        services.AddTransient<IStartupFilter, RequestSetOptionsStartupFilter>();
+    })
+    .UseStartup<Startup>();
+```
+
+## Built-in IoC
+
+ServiceLifetime 
+ - Scoped - new instance of the service will be created for each scope (each request).
+ - Singleton -  single instance of the service will be created.
+ - Transient - new instance of the service will be created every time it is requested.
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    services.AddScoped<IMyDependency, MyDependency>();
+    services.AddTransient<IMyDependency,MyDependency>();
+    services.AddSingleton<IMyDependency,MyDependency>();
+}
+```
+
+
+Initially, the `IServiceCollection` provided to `ConfigureServices` has the following services defined (depending on how the host was configured):
+
+
+| Service Type | Lifetime |
+| --- | --- |
+| Microsoft.AspNetCore.Hosting.Builder.IApplicationBuilderFactory | Transient |
+| Microsoft.AspNetCore.Hosting.IApplicationLifetime	| Singleton |
+| Microsoft.AspNetCore.Hosting.IHostingEnvironment	| Singleton |
+| Microsoft.AspNetCore.Hosting.IStartup	| Singleton |
+| Microsoft.AspNetCore.Hosting.IStartupFilter	| Transient |
+| Microsoft.AspNetCore.Hosting.Server.IServer	| Singleton |
+| Microsoft.AspNetCore.Http.IHttpContextFactory	| Transient |
+| Microsoft.Extensions.Logging.ILogger<T>	| Singleton |
+| Microsoft.Extensions.Logging.ILoggerFactory	| Singleton |
+| Microsoft.Extensions.ObjectPool.ObjectPoolProvider	| Singleton |
+| Microsoft.Extensions.Options.IConfigureOptions<T>	| Transient |
+| Microsoft.Extensions.Options.IOptions<T>	| Singleton |
+| System.Diagnostics.DiagnosticSource	| Singleton |
+| System.Diagnostics.DiagnosticListener	| Singleton |
+
+
+**Action Method Injection**
+
+Sometimes we may only need dependency service type in a single action method. For this, use `[FromServices]` attribute with the service type parameter in the method.
+
+```csharp
+public class HomeController : Controller
+{
+    public HomeController()
+    {
+    }
+
+
+    public IActionResult Index([FromServices] ILog log)
+    {
+        log.info("Index method executing");
+
+
+        return View();
+    }
+}
+```
+
+**Property Injection**
+Built-in IoC container does not support property injection. You will have to use third party IoC container.
+
+
+The followings are important interfaces and classes for built-in IoC container:
+
+![ASP DI](/assets/images/asp-di.png)
+
+There are three ways to get an instance of `IServiceProvider`:
+
+```csharp
+public void Configure(IServiceProvider pro, IApplicationBuilder app, IHostingEnvironment env)
+{
+    var services = app.ApplicationServices;
+    var logger = services.GetService<ILog>() }
+
+
+    //other code removed for clarity 
+}
+```
+
+```csharp
+var services = HttpContext.RequestServices;
+var log = (ILog)services.GetService(typeof(ILog));
+```
+
+```csharp
+public void ConfigureServices(IServiceCollection services)
+{
+    var serviceProvider = services.BuildServiceProvider();
+}
+```

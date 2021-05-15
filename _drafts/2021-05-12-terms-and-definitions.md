@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Terms & Definitions"
-date:   20124-09-21 00:00:00 +0000
+date:   2019-09-21 00:00:00 +0000
 categories: [General]
 tags: [terms, definitions]
 ---

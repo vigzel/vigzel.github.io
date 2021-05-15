@@ -66,6 +66,7 @@ This option will enable you to use latest and greates from jekyll.
 The Action we’re using here will create (or reset an existing) gh-pages branch on every successful deploy.
 
 ```yml
+{% raw %}
 name: Build and deploy Jekyll site to GitHub Pages
 
 on:
@@ -79,11 +80,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # Use GitHub Actions' cache to shorten build times and decrease load on servers
+    # Use GitHub Actions' cache to shorten build times 
+    # and decrease load on servers
     - uses: actions/cache@v2
       with:
         path: vendor/bundle
-        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }}
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile') }} 
         restore-keys: |
           ${{ runner.os }}-gems-
 
@@ -92,6 +94,7 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         target_branch: 'gh-pages'
+{% endraw %}
 ```
 
 > Cons:
