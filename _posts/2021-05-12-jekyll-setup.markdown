@@ -2,7 +2,8 @@
 layout: post
 title:  "Github pages with Jekyll"
 date:   2021-05-12 16:54:25 +0200
-categories: jekyll, github-pages
+categories: [Tutorial]
+tags: [jekyl, github-pages]
 ---
 
 
