@@ -47,10 +47,10 @@ public class Program
 ```
 
 `CreateDefaultBuilder` performs the following tasks:
- * Configures Kestrel server as the web server. 
- * Sets the content root to the path returned by Directory.GetCurrentDirectory.
+ * Configures **Kestrel** server as the web server. 
+ * Sets the content root to the path returned by `Directory.GetCurrentDirectory`
  * Loads host configuration from:
-   * Environment variables prefixed with ASPNETCORE_ (for example, ASPNETCORE_ENVIRONMENT).
+   * Environment variables prefixed with **ASPNETCORE_** (for example, **ASPNETCORE_**ENVIRONMENT).
    * Command-line arguments.
  * Loads app configuration in the following order from:
    * appsettings.json.
