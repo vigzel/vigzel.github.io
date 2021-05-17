@@ -1,0 +1,8 @@
+---
+---
+
+@import "{{ site.theme }}";
+
+.table-wrapper > table tbody tr td {
+	white-space: pre-wrap;
+}

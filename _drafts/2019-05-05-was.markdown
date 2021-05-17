@@ -1,0 +1,19 @@
+---
+layout: post
+title:  "Windows Process Activation Service (WAS)"
+date:   2019-05-05 00:00:00 +0000
+categories: [ASP.NET Core]
+tags: [asp.net, WAS]
+---
+
+
+`WAS` major task is to manage Application Pools. 
+
+> Application Pools are configuration containers that represent the hosting environment for groups of URLs. 
+
+When an HTTP client requests a URL, `HTTP.SYS` maps the request to an Application Pool request queue. A worker process is then spawned by WAS and it executes the code necessary to send a response. One of WAS's main tasks is to manage the worker processes it spawned, i.e. WAS monitors their health, recycles them if necessary and makes sure none of them consume more resources than specified in the corresponding AppPool configuration. 
+ - **On-Demand Activation** - Resources like RAM and CPU are scarce in multi-tenant scenarios. WAS will start an IIS worker process only once requests for a particular web site or web application arrive.
+ - **Idle-timeout** - Because resources are usually scarce WAS can shutdown web applications based on a configurable idle-timeout.
+ - **Health Monitoring** - Health messages are periodically sent to each running worker process. If the worker process doesn't respond in a configurable time interval the worker process will be recycled or killed. This way undetected deadlocks in worker processes get automatically fixed by restarting the worker process.
+ - **Startup Limit** - If a worker process doesn't report back to WAS within the configurable startup-limit it will be killed and the Rapid-Fail-Protection counter is incremented. Application Pools are stopped, i.e. restarting the worker process will not be tried anymore,
+ - **Shutdown Limit** - If the shutdown doesn't happen in this time the worker process gets killed by WAS. 
